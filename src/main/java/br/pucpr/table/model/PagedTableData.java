@@ -1,6 +1,6 @@
 package br.pucpr.table.model;
 
-public class PagedTableData implements TableData {
+public class PagedTableData extends AbstractTableData {
   private final TableData data;
   private final int pageSize;
   private int page;
@@ -15,6 +15,7 @@ public class PagedTableData implements TableData {
 
     this.data = data;
     this.pageSize = pageSize;
+    this.data.addObserver(this::onDataChanged);
   }
 
   public int getPage() {
@@ -25,7 +26,11 @@ public class PagedTableData implements TableData {
     if (page < 0 || page >= getPageCount()) {
       throw new IndexOutOfBoundsException("Page out of range: " + page);
     }
+    if (this.page == page) {
+      return;
+    }
     this.page = page;
+    fireTableDataChanged();
   }
 
   public int getPageSize() {
@@ -59,5 +64,15 @@ public class PagedTableData implements TableData {
       throw new IndexOutOfBoundsException("Row out of range: " + row);
     }
     return data.get(page * pageSize + row, col);
+  }
+
+  private void onDataChanged() {
+    final var pageCount = getPageCount();
+    if (pageCount == 0) {
+      page = 0;
+    } else if (page >= pageCount) {
+      page = pageCount - 1;
+    }
+    fireTableDataChanged();
   }
 }

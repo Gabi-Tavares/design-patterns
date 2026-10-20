@@ -8,4 +8,10 @@ public interface TableData {
   String header(int col);
 
   String get(int row, int col);
+
+  void addObserver(DataChangedObserver observer);
+
+  void removeObserver(DataChangedObserver observer);
+
+  void fireTableDataChanged();
 }

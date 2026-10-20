@@ -6,11 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import br.pucpr.table.Table;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class PagedTableDataTest {
-  private final TableData data =
-      new TableData() {
+  private final AbstractTableData data =
+      new AbstractTableData() {
         private final String[][] rows = {
           {"Ana", "ana@example.com"},
           {"Bia", "bia@example.com"},
@@ -92,7 +93,26 @@ class PagedTableDataTest {
     assertThrows(IndexOutOfBoundsException.class, () -> emptyData.setPage(0));
   }
 
-  private static class EmptyTableData implements TableData {
+  @Test
+  void notifiesObserversWhenPageOrSourceDataChanges() {
+    final var pagedData = new PagedTableData(data, 2);
+    final var notifications = new AtomicInteger();
+    final DataChangedObserver observer = notifications::incrementAndGet;
+    pagedData.addObserver(observer);
+
+    pagedData.setPage(1);
+    pagedData.setPage(1);
+    assertEquals(1, notifications.get());
+
+    data.fireTableDataChanged();
+    assertEquals(2, notifications.get());
+
+    pagedData.removeObserver(observer);
+    pagedData.setPage(0);
+    assertEquals(2, notifications.get());
+  }
+
+  private static class EmptyTableData extends AbstractTableData {
     @Override
     public int rowCount() {
       return 0;

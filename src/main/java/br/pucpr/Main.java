@@ -9,6 +9,7 @@ import br.pucpr.planet.Planet;
 import br.pucpr.planet.PlanetsTableData;
 import br.pucpr.table.Table;
 import br.pucpr.table.model.ColumnTableData;
+import br.pucpr.table.model.PagedTableData;
 import br.pucpr.user.CpfColumn;
 import br.pucpr.user.EmailColumn;
 import br.pucpr.user.IdColumn;
@@ -33,7 +34,12 @@ public class Main {
     final var usersData =
         new ColumnTableData<User>(
             usuarios, new IdColumn(), new NameColumn(), new CpfColumn(), new EmailColumn());
-    new Table(usersData, LIGHT, true).print();
+    final var pagedUsers = new PagedTableData(usersData, 2);
+    final var usersTable = new Table(pagedUsers, LIGHT, true);
+    pagedUsers.addObserver(usersTable::print);
+    pagedUsers.setPage(1);
+    pagedUsers.setPage(2);
+    pagedUsers.setPage(0);
 
     final var planetas = new ArrayList<Planet>();
     planetas.add(new Planet("Mercúrio", 4879, 57_910_000L, ROCK));
@@ -49,6 +55,9 @@ public class Main {
     System.out.println();
     System.out.println("IMPRIMINDO PLANETAS");
     System.out.println("-------------------");
-    new Table(new PlanetsTableData(planetas)).print();
+    final var planetsData = new PlanetsTableData(planetas);
+    final var planetsTable = new Table(planetsData);
+    planetsData.addObserver(planetsTable::print);
+    planetsTable.print();
   }
 }

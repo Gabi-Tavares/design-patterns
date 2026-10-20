@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class ColumnTableData<T> implements TableData {
+public class ColumnTableData<T> extends AbstractTableData {
   private final List<ColumnData<? super T>> columns;
   private final List<T> data;
 

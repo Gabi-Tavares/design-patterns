@@ -1,9 +1,9 @@
 package br.pucpr.planet;
 
-import br.pucpr.table.model.TableData;
+import br.pucpr.table.model.AbstractTableData;
 import java.util.ArrayList;
 
-public class PlanetsTableData implements TableData {
+public class PlanetsTableData extends AbstractTableData {
   private final ArrayList<Planet> planets;
   private static final int COL_NAME = 0;
   private static final int COL_DIAMETER = 1;

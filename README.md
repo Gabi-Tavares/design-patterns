@@ -23,6 +23,18 @@ new Table(pagedData).print();
 
 O tamanho da página deve ser maior que zero, e só é possível selecionar páginas existentes.
 
+## Notificação de alterações
+
+Componentes interessados podem se inscrever em qualquer `TableData` com `addObserver`. Novas implementações podem estender `AbstractTableData` para reutilizar o gerenciamento dos observadores. Implementações mutáveis devem chamar `fireTableDataChanged()` depois de atualizar seus dados. Para deixar de receber notificações, use `removeObserver`.
+
+```java
+var table = new Table(tableData);
+tableData.addObserver(table::print);
+tableData.fireTableDataChanged();
+```
+
+`PagedTableData` também notifica seus observadores quando a página muda e propaga as notificações recebidas da fonte de dados.
+
 ---
 
 ## 🛠️ Requisitos para Execução
